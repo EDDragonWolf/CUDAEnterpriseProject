@@ -1,0 +1,44 @@
+./nppFilters Starting...
+
+NPP Library Version 11.3.3
+  CUDA Driver  Version: 11.6
+  CUDA Runtime Version: 11.3
+  Device 0: <           Volta >, Compute SM 7.0 detected
+GPU Device 0: "Volta" with compute capability 7.0
+
+Selected Canny Edge Detection Filter.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm started.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm ended. Result saved to: ./output/canny_test.bmp
+./nppFilters Starting...
+
+NPP Library Version 11.3.3
+  CUDA Driver  Version: 11.6
+  CUDA Runtime Version: 11.3
+  Device 0: <           Volta >, Compute SM 7.0 detected
+GPU Device 0: "Volta" with compute capability 7.0
+
+Selected Sobel Edge Detection Filter.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm started.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm ended. Result saved to: ./output/sobel_test.bmp
+./nppFilters Starting...
+
+NPP Library Version 11.3.3
+  CUDA Driver  Version: 11.6
+  CUDA Runtime Version: 11.3
+  Device 0: <           Volta >, Compute SM 7.0 detected
+GPU Device 0: "Volta" with compute capability 7.0
+
+Selected Gauss Smooth Filter.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm started.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm ended. Result saved to: ./output/gauss_test.bmp
+./nppFilters Starting...
+
+NPP Library Version 11.3.3
+  CUDA Driver  Version: 11.6
+  CUDA Runtime Version: 11.3
+  Device 0: <           Volta >, Compute SM 7.0 detected
+GPU Device 0: "Volta" with compute capability 7.0
+
+Selected Sharpening Filter.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm started.
+Processing of ./data/CroppedYale/yaleB12/yaleB12_P00A+000E+00.pgm ended. Result saved to: ./output/sharpen_test.bmp
