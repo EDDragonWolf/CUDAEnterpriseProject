@@ -100,11 +100,156 @@ void cannyFilter(const std::string &filePath, const std::string &outputFile)
     }
 }
 
+void sobelFilter(const std::string &filePath, const std::string &outputFile)
+{
+    try
+    {
+        std::cout << "Processing of " << filePath << " started." << std::endl;
+        npp::ImageCPU_8u_C1 hostSrc;
+        npp::loadImage(filePath, hostSrc);
+        npp::ImageNPP_8u_C1 deviceSrc(hostSrc);
+        const NppiSize srcSize = {(int)deviceSrc.width(), (int)deviceSrc.height()};
+        const NppiPoint srcOffset = {0, 0};
+
+        const NppiSize filterROI = {(int)deviceSrc.width(), (int)deviceSrc.height()};
+        npp::ImageNPP_8u_C1 deviceDst(filterROI.width, filterROI.height);
+
+        NPP_CHECK_NPP(nppiFilterSobelHorizBorder_8u_C1R(deviceSrc.data(), deviceSrc.pitch(), srcSize, srcOffset,
+                                                        deviceDst.data(), deviceDst.pitch(), filterROI,
+                                                        NppiBorderType::NPP_BORDER_REPLICATE));
+
+        npp::ImageCPU_8u_C1 hostDst(deviceDst.size());
+        deviceDst.copyTo(hostDst.data(), hostDst.pitch());
+        saveImage(outputFile, hostDst);
+        std::cout << "Processing of " << filePath << " ended. Result saved to: " << outputFile << std::endl;
+
+        nppiFree(deviceSrc.data());
+        nppiFree(deviceDst.data());
+    }
+    catch (npp::Exception &rException)
+    {
+        std::cerr << "Program error! The following exception occurred: \n";
+        std::cerr << rException << std::endl;
+        std::cerr << "Aborting." << std::endl;
+
+        exit(EXIT_FAILURE);
+    }
+    catch (...)
+    {
+        std::cerr << "Program error! An unknow type of exception occurred. \n";
+        std::cerr << "Aborting." << std::endl;
+
+        exit(EXIT_FAILURE);
+    }
+}
+
+void gaussFilter(const std::string &filePath, const std::string &outputFile)
+{
+    try
+    {
+        std::cout << "Processing of " << filePath << " started." << std::endl;
+        npp::ImageCPU_8u_C1 hostSrc;
+        npp::loadImage(filePath, hostSrc);
+        npp::ImageNPP_8u_C1 deviceSrc(hostSrc);
+        const NppiSize srcSize = {(int)deviceSrc.width(), (int)deviceSrc.height()};
+        const NppiPoint srcOffset = {0, 0};
+
+        const NppiSize filterROI = {(int)deviceSrc.width(), (int)deviceSrc.height()};
+        npp::ImageNPP_8u_C1 deviceDst(filterROI.width, filterROI.height);
+
+        NPP_CHECK_NPP(nppiFilterGaussBorder_8u_C1R(deviceSrc.data(), deviceSrc.pitch(), srcSize, srcOffset,
+                                                   deviceDst.data(), deviceDst.pitch(), filterROI,
+                                                   NppiMaskSize::NPP_MASK_SIZE_3_X_3, NppiBorderType::NPP_BORDER_REPLICATE));
+
+        npp::ImageCPU_8u_C1 hostDst(deviceDst.size());
+        deviceDst.copyTo(hostDst.data(), hostDst.pitch());
+        saveImage(outputFile, hostDst);
+        std::cout << "Processing of " << filePath << " ended. Result saved to: " << outputFile << std::endl;
+
+        nppiFree(deviceSrc.data());
+        nppiFree(deviceDst.data());
+    }
+    catch (npp::Exception &rException)
+    {
+        std::cerr << "Program error! The following exception occurred: \n";
+        std::cerr << rException << std::endl;
+        std::cerr << "Aborting." << std::endl;
+
+        exit(EXIT_FAILURE);
+    }
+    catch (...)
+    {
+        std::cerr << "Program error! An unknow type of exception occurred. \n";
+        std::cerr << "Aborting." << std::endl;
+
+        exit(EXIT_FAILURE);
+    }
+}
+
+void sharpenFilter(const std::string &filePath, const std::string &outputFile)
+{
+    try
+    {
+        std::cout << "Processing of " << filePath << " started." << std::endl;
+        npp::ImageCPU_8u_C1 hostSrc;
+        npp::loadImage(filePath, hostSrc);
+        npp::ImageNPP_8u_C1 deviceSrc(hostSrc);
+        const NppiSize srcSize = {(int)deviceSrc.width(), (int)deviceSrc.height()};
+        const NppiPoint srcOffset = {0, 0};
+
+        const NppiSize filterROI = {(int)deviceSrc.width(), (int)deviceSrc.height()};
+        npp::ImageNPP_8u_C1 deviceDst(filterROI.width, filterROI.height);
+
+        NPP_CHECK_NPP(nppiFilterSharpenBorder_8u_C1R(deviceSrc.data(), deviceSrc.pitch(), srcSize, srcOffset,
+                                                     deviceDst.data(), deviceDst.pitch(), filterROI,
+                                                     NppiBorderType::NPP_BORDER_REPLICATE));
+
+        npp::ImageCPU_8u_C1 hostDst(deviceDst.size());
+        deviceDst.copyTo(hostDst.data(), hostDst.pitch());
+        saveImage(outputFile, hostDst);
+        std::cout << "Processing of " << filePath << " ended. Result saved to: " << outputFile << std::endl;
+
+        nppiFree(deviceSrc.data());
+        nppiFree(deviceDst.data());
+    }
+    catch (npp::Exception &rException)
+    {
+        std::cerr << "Program error! The following exception occurred: \n";
+        std::cerr << rException << std::endl;
+        std::cerr << "Aborting." << std::endl;
+
+        exit(EXIT_FAILURE);
+    }
+    catch (...)
+    {
+        std::cerr << "Program error! An unknow type of exception occurred. \n";
+        std::cerr << "Aborting." << std::endl;
+
+        exit(EXIT_FAILURE);
+    }
+}
+
 void applyFilter(const std::string &filterType, const std::string &filePath, const std::string &outputFile)
 {
     if (filterType == "canny")
     {
+        std::cout << "Selected Canny Edge Detection Filter." << std::endl;
         cannyFilter(filePath, outputFile);
+    }
+    else if (filterType == "sobel")
+    {
+        std::cout << "Selected Sobel Edge Detection Filter." << std::endl;
+        sobelFilter(filePath, outputFile);
+    }
+    else if (filterType == "gauss")
+    {
+        std::cout << "Selected Gauss Smooth Filter." << std::endl;
+        gaussFilter(filePath, outputFile);
+    }
+    else if (filterType == "sharpen")
+    {
+        std::cout << "Selected Sharpening Filter." << std::endl;
+        sharpenFilter(filePath, outputFile);
     }
     else
     {
@@ -188,59 +333,5 @@ int main(int argc, char *argv[])
         }
         applyFilter(filterType, inputValue, outputFile);
     }
-
-    //         std::string sResultFilename = sFilename;
-
-    //         std::string::size_type dot = sResultFilename.rfind('.');
-
-    //         if (dot != std::string::npos)
-    //         {
-    //             sResultFilename = sResultFilename.substr(0, dot);
-    //         }
-
-    //         sResultFilename += "_boxFilter.pgm";
-
-    //         if (checkCmdLineFlag(argc, (const char **)argv, "output"))
-    //         {
-    //             char *outputFilePath;
-    //             getCmdLineArgumentString(argc, (const char **)argv, "output",
-    //                                      &outputFilePath);
-    //             sResultFilename = outputFilePath;
-    //         }
-
-
-
-
-
-    //         // declare a host image for the result
-    //         npp::ImageCPU_8u_C1 oHostDst(oDeviceDst.size());
-    //         // and copy the device result data into it
-    //         oDeviceDst.copyTo(oHostDst.data(), oHostDst.pitch());
-
-    //         saveImage(sResultFilename, oHostDst);
-    //         std::cout << "Saved image: " << sResultFilename << std::endl;
-
-    //         nppiFree(oDeviceSrc.data());
-    //         nppiFree(oDeviceDst.data());
-
-    //         exit(EXIT_SUCCESS);
-    //     }
-    //     catch (npp::Exception &rException)
-    //     {
-    //         std::cerr << "Program error! The following exception occurred: \n";
-    //         std::cerr << rException << std::endl;
-    //         std::cerr << "Aborting." << std::endl;
-
-    //         exit(EXIT_FAILURE);
-    //     }
-    //     catch (...)
-    //     {
-    //         std::cerr << "Program error! An unknow type of exception occurred. \n";
-    //         std::cerr << "Aborting." << std::endl;
-
-    //         exit(EXIT_FAILURE);
-    //         return -1;
-    //     }
-
     return 0;
 }
