@@ -7,11 +7,11 @@
 
 #include <Exceptions.h>
 #include <ImageIO.h>
-// #include <ImagesCPU.h>
-// #include <ImagesNPP.h>
+#include <ImagesCPU.h>
+#include <ImagesNPP.h>
 
 #include <string>
-// #include <fstream>
+#include <vector>
 #include <iostream>
 #include <filesystem>
 
@@ -19,7 +19,6 @@
 // #include <npp.h>
 
 #include <helper_cuda.h>
-// #include <helper_string.h>
 
 bool printfNPPinfo(int argc, char *argv[])
 {
@@ -82,6 +81,8 @@ void cannyFilter(const std::string &filePath, const std::string &outputFile)
 
         nppiFree(deviceSrc.data());
         nppiFree(deviceDst.data());
+        nppiFree(hostSrc.data());
+        nppiFree(hostDst.data());
     }
     catch (npp::Exception &rException)
     {
@@ -168,6 +169,8 @@ void gaussFilter(const std::string &filePath, const std::string &outputFile)
 
         nppiFree(deviceSrc.data());
         nppiFree(deviceDst.data());
+        nppiFree(hostSrc.data());
+        nppiFree(hostDst.data());
     }
     catch (npp::Exception &rException)
     {
@@ -229,6 +232,19 @@ void sharpenFilter(const std::string &filePath, const std::string &outputFile)
     }
 }
 
+std::vector<std::string> splitString(const std::string &data, char separator)
+{
+    std::vector<std::string> strings;
+    std::istringstream f(data);
+    std::string s;
+    while (getline(f, s, separator))
+    {
+
+        strings.push_back(s);
+    }
+    return strings;
+}
+
 void applyFilter(const std::string &filterType, const std::string &filePath, const std::string &outputFile)
 {
     if (filterType == "canny")
@@ -255,6 +271,8 @@ void applyFilter(const std::string &filterType, const std::string &filePath, con
     {
         std::cout << "Filter type isn't supported!" << std::endl;
     }
+    cudaDeviceSynchronize();
+    cudaDeviceReset();
 }
 
 int main(int argc, char *argv[])
@@ -318,18 +336,20 @@ int main(int argc, char *argv[])
 
     std::string filterType{filterData};
     std::string output{outputData};
+    if (std::filesystem::is_directory(output))
+    {
+        std::filesystem::create_directory(output);
+    }
 
     std::string inputValue{inputData};
-    if (std::filesystem::is_directory(inputValue))
-    {
-
-    }
-    else
+    if (!std::filesystem::is_directory(inputValue))
     {
         std::string outputFile{output};
         if (std::filesystem::is_directory(output))
         {
-            outputFile += "/" + std::filesystem::path(inputValue).filename().string();
+            const std::string fileName = std::filesystem::path(inputValue).filename().string();
+            const auto parts = splitString(fileName, '.');
+            outputFile += "/" + parts.front() + ".bmp";
         }
         applyFilter(filterType, inputValue, outputFile);
     }
